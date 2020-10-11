@@ -1,10 +1,9 @@
 const jwt = require("jsonwebtoken");
-const { head } = require("../routes/router");
 
 //Key form decript
 const jwtKey = process.env.JWT_KEY;
 
-exports.authentication = async (req, res, next) => {
+exports.auth = async (req, res, next) => {
   let header, token;
 
   //If header or token not found or empty
