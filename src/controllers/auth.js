@@ -104,3 +104,79 @@ exports.register = async (req, res) => {
     console.log(err);
   }
 };
+
+//Login function
+exports.login = async (req, res) => {
+  try {
+    // Get email and password from body
+    const { email, password } = req.body;
+
+    // Validation
+    const schema = joi.object({
+      email: joi.string().email().min(13).required(),
+      password: joi.string().min(8).required(),
+    });
+
+    // List errors / errors from the form into the error variable
+    const { error } = schema.validate(req.body);
+
+    // Show error
+    if (error) {
+      return res.status(400).send({
+        error: {
+          message: error.details[0].message,
+        },
+      });
+    }
+
+    // Looking for whether the email entered by the user is in the database or not
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    //If the email doesn't exist, issue an error
+    if (!user) {
+      return res.status(400).send({
+        error: "Email or password is invalid",
+      });
+    }
+
+    // Compare password from user input with password in the database
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+      return res.status(400).send({
+        error: "Email or password is invalid",
+      });
+    }
+
+    // When logged in successfully, create a new token
+    const token = jwt.sign(
+      {
+        id: user.id,
+      },
+      jwtKey
+    );
+
+    // Send respon success logged in
+    res.send({
+      message: "Login successfully",
+      data: {
+        user: {
+          email: user.email,
+          role: user.role,
+          token: token,
+        },
+      },
+    });
+  } catch (err) {
+    res.status(500).send({
+      error: {
+        message: "Server error",
+      },
+    });
+
+    console.log(err);
+  }
+};
