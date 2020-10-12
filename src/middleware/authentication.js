@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { User } = require("../../models");
 
 //Key form decript
 const jwtKey = process.env.JWT_KEY;
@@ -29,5 +30,21 @@ exports.auth = async (req, res, next) => {
         message: "Invalid token",
       },
     });
+  }
+};
+
+exports.authAdmin = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+
+    if (user.dataValues.role !== 1)
+      return res
+        .status(400)
+        .send({ message: "Invalid Operation, You login as User" });
+
+    next();
+  } catch (error) {
+    console.log(error);
+    res.status(400).send({ message: "Invalid token" });
   }
 };

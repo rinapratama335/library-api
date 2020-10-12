@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       gender: DataTypes.ENUM("male", "female"),
       phone: DataTypes.BIGINT,
       address: DataTypes.TEXT,
-      role: DataTypes.ENUM("user", "admin"),
+      role: DataTypes.INTEGER,
     },
     {
       sequelize,
