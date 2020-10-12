@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
       gender: joi.required(),
       phone: joi.number().required(),
       address: joi.required(),
-      role: joi.string(),
+      role: joi.required(),
     });
 
     const { error } = schema.validate(req.body);
@@ -178,5 +178,26 @@ exports.login = async (req, res) => {
     });
 
     console.log(err);
+  }
+};
+
+exports.cekAuth = async (req, res) => {
+  console.log(req.user.id);
+
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.user.id,
+      },
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "categoryId", "password"],
+      },
+    });
+    res.status(200).send({
+      data: user,
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
   }
 };
