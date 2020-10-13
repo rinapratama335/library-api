@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { auth, authAdmin } = require("../middleware/authentication");
+const { upload } = require("../middleware/uploadFile");
 const { register: registration, login } = require("../controllers/auth");
 const { getAllUsers, deleteUser } = require("../controllers/user");
 const {
@@ -11,6 +12,13 @@ const {
   editCategory,
   deleteCategory,
 } = require("../controllers/category");
+const {
+  getAllBooks,
+  addBook,
+  detailBook,
+  editBook,
+  deleteBook,
+} = require("../controllers/book");
 
 router.post("/register", registration);
 router.post("/login", login);
@@ -23,4 +31,9 @@ router.post("/category", auth, authAdmin, addCategory);
 router.patch("/category/:id", auth, authAdmin, editCategory);
 router.delete("/category/:id", auth, authAdmin, deleteCategory);
 
+router.get("/books", auth, getAllBooks);
+router.post("/book", auth, authAdmin, upload.single("file"), addBook);
+router.get("/book/:id", auth, detailBook);
+router.patch("/book/:id", auth, authAdmin, editBook);
+router.delete("/book/:id", auth, authAdmin, deleteBook);
 module.exports = router;
