@@ -102,6 +102,7 @@ exports.detailBook = async (req, res) => {
 };
 
 exports.addBook = async (req, res) => {
+  console.log("ID User : ", req.user);
   const checkISBN = await Book.findOne({
     where: {
       ISBN: req.body.ISBN,
@@ -115,7 +116,14 @@ exports.addBook = async (req, res) => {
   }
 
   const saveBook = await Book.create({
-    ...req.body,
+    // ...req.body,
+    title: req.body.title,
+    publication: req.body.publication,
+    categoryId: req.body.categoryId,
+    userId: req.user.id,
+    pages: req.body.pages,
+    ISBN: req.body.ISBN,
+    aboutBook: req.body.aboutBook,
     file: req.file.filename,
   });
 

@@ -22,6 +22,7 @@ exports.auth = async (req, res, next) => {
     const verified = jwt.verify(token, jwtKey);
 
     req.user = verified;
+    console.log("Isi user : ", req.user);
     next();
   } catch (err) {
     console.log(err);
