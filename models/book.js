@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
           name: "userId",
         },
       });
+
+      Book.belongsToMany(models.User, {
+        as: "users",
+        through: {
+          model: "mylibraries",
+          as: "library",
+        },
+      });
     }
   }
   Book.init(
